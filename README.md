@@ -1,43 +1,114 @@
 # 🛒 E-Commerce Microservices Project
 
-A learning project to build scalable microservices using Spring Boot 3.x.
+This repository contains a Spring Boot-based e-commerce microservices sample used for learning and experimentation. It demonstrates common microservices patterns: service discovery, centralized configuration, API gateway, authentication, and inter-service communication.
 
-## 🏗️ Architecture
+## Repository Structure
 
-- **Service Registry** (Eureka) - Port 8761 ✅
-- **Config Server** - Port 8888 ✅
-- **API Gateway** - Port 8080
-- **Auth Service** - Port 8081
-- **Product Service** - Port 8082
-- **Order Service** - Port 8083
-- **Payment Service** - Port 8084
-- **Notification Service** - Port 8085
+- `service-registry/` — Eureka service registry
+- `config-server/` — Spring Cloud Config Server + config files
+- `api-gateway/` — API Gateway (routing + filters)
+- `auth-service/` — Authentication (JWT) and user management
+- `product-service/` — Product catalog API
+- `order-service/` — Order processing service
+- `payment-service/` — Payment integration (simulation)
+- `notification-service/` — Notifications (email / push simulation)
 
-## 🛠️ Tech Stack
+## Key Features
 
-- Java 17/25
-- Spring Boot 3.3.5
-- Spring Cloud 2023.0.3
-- MySQL
-- Maven
-- Eureka, Config Server, API Gateway
-- Kafka/RabbitMQ (coming soon)
-- Docker (coming soon)
+- Service Discovery with Eureka
+- Centralized configuration with Spring Cloud Config
+- API Gateway for routing and cross-cutting concerns
+- JWT-based authentication and authorization
+- Modular service design for independent development
 
-## 📅 Progress
+## Prerequisites
 
-- [x] **Day 1:** Service Registry + Config Server ✅
-- [ ] **Day 2:** API Gateway + Auth Service Skeleton
-- [ ] **Day 3-4:** Auth Service - JWT Implementation
-- [ ] **Day 5-7:** Product Service
-- [ ] ... and more
+- Java 17 or newer installed
+- Maven 3.6+ (or the Maven wrapper if provided)
+- (Optional) Docker & Docker Compose for containerized runs
 
-## 🚀 How to Run
+## Build (all modules)
 
-1. Start Service Registry: `cd service-registry && mvn spring-boot:run`
-2. Start Config Server: `cd config-server && mvn spring-boot:run`
-3. Start other services similarly
+From the repository root run:
 
-## 📁 Project Structure
+```bash
+mvn -T 1C clean package
+```
 
-microservices-ecommerce/ ├── service-registry/ (Eureka Server) ├── config-server/ (Centralized Config) ├── api-gateway/ (Single Entry Point) ├── auth-service/ (Authentication & JWT) ├── product-service/ (Product Management) ├── order-service/ (Order Processing) ├── payment-service/ (Payment Handling) └── notification-service/ (Async Notifications)
+This produces executable jars under each service's `target/` directory.
+
+## Run services (development)
+
+Recommended order to start services locally:
+
+1. Service Registry (Eureka)
+	- `cd service-registry && mvn spring-boot:run`
+2. Config Server
+	- `cd config-server && mvn spring-boot:run`
+3. API Gateway
+	- `cd api-gateway && mvn spring-boot:run`
+4. Auth Service
+	- `cd auth-service && mvn spring-boot:run`
+5. Domain services (product, order, payment, notification)
+	- `cd product-service && mvn spring-boot:run`
+	- `cd order-service && mvn spring-boot:run`
+	- `cd payment-service && mvn spring-boot:run`
+	- `cd notification-service && mvn spring-boot:run`
+
+Alternatively, run the built jars:
+
+```bash
+# example
+java -jar service-registry/target/service-registry-1.0.0.jar
+java -jar config-server/target/config-server-1.0.0.jar
+```
+
+Note: Service names and artifact versions may differ; adapt the jar names from each `target/` folder.
+
+## Default Ports (check each service's `application.yml` for overrides)
+
+- Service Registry: 8761
+- Config Server: 8888
+- API Gateway: 8080
+- Auth Service: 8081
+- Product Service: 8082
+- Order Service: 8083
+- Payment Service: 8084
+- Notification Service: 8085
+
+## Configuration
+
+- Centralized configuration is stored under `config-server/config-files/` (e.g. `auth-service.yml`).
+- Each service fetches its configuration from the config server at startup. To change settings, edit the appropriate file and restart the affected service.
+
+## Docker (optional)
+
+You can containerize services with Docker. A `docker-compose.yml` is not included by default — you can create one mapping each service to its jar and expose ports listed above.
+
+## Testing
+
+- Unit tests: `mvn test` inside each service module or run from the root to execute all modules.
+- Integration tests: add service-specific integration tests as needed (Testcontainers recommended).
+
+## Troubleshooting Tips
+
+- If a service fails to fetch config, confirm the Config Server is running and reachable at port 8888.
+- If a service fails to register, confirm the Service Registry is running and check service `application.yml` for correct `eureka.client.service-url`.
+
+## Contribution
+
+Contributions and experiments are welcome. Suggested workflow:
+
+1. Create a feature branch off `main` (or `master`).
+2. Implement and test changes in the relevant service folder.
+3. Open a pull request with a summary and testing steps.
+
+## Where to look next
+
+- Service-specific configuration: `config-server/config-files/`
+- Service entrypoints: check `src/main/java/...` under each module
+
+---
+
+Updated README to include overview, structure, build/run instructions, and troubleshooting. See each service's own README for module-specific details.
+
