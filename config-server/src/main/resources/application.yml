@@ -10,7 +10,10 @@ spring:
     config:
       server:
         native:
-          search-locations: file:./config-files
+          search-locations:
+            - file:./config-files
+            - file:../config-server/config-files
+            - file:${user.dir}/config-server/config-files
 
 eureka:
   client:
